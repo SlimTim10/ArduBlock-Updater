@@ -16,4 +16,5 @@ racket ardublock_updater.rkt
 
 ```
 raco exe ardublock_updater.rkt
+raco distribute ardublock_updater ardublock_updater.exe
 ```
