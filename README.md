@@ -2,7 +2,7 @@
 
 ## Description
 
-A tool for updating to the latest version of Icewire Makerspace's ArduBlock fork.
+A GUI tool for updating to the latest version of Icewire Makerspace's ArduBlock fork.
 
 ## Run
 
