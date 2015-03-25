@@ -4,9 +4,14 @@
 (require file/unzip)
 
 (define ardublockzip "ardublock.zip")
-(define ardublockdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "/Documents/Arduino/tools/ArduBlockTool/tool/"))
-(define arduinolibdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "/Documents/Arduino/libraries/"))
 (define button-width 150)
+(define ardublockdir "/Documents/Arduino/tools/ArduBlockTool/tool/")
+(define arduinolibdir "/Documents/Arduino/libraries/")
+(cond
+ [(equal? (system-type 'os) 'windows)
+  (set! ardublockdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") ardublockdir))
+  (set! arduinolibdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") arduinolibdir))
+  ])
 
 (define (delete-ardublock)
   (when (not (directory-exists? ardublockdir))
@@ -59,7 +64,7 @@
 		  (with-handlers ([exn:fail?
 						   (lambda (exn) (update-msg (string-append "Error: " (exn-message exn))) (return))])
 						 (copy-ardublock))
-		  (sleep 1)
+		  (sleep 0.5)
 		  (with-handlers ([exn:fail?
 						   (lambda (exn) (update-msg (string-append "Error: " (exn-message exn))) (return))])
 						 (clean-ardublock))))
@@ -135,7 +140,8 @@
 				 (clear-msg)
 				 (update-ardublock)
 				 (update-msg "\n")
-				 (get-libraries))]))
+				 (get-libraries)
+				 (update-msg "\nAll done!\n"))]))
 (send full-update-button focus)
 
 (new button%
@@ -144,7 +150,8 @@
 	 [min-width button-width]
 	 [callback (lambda (button event)
 				 (clear-msg)
-				 (update-ardublock))])
+				 (update-ardublock)
+				 (update-msg "\nAll done!\n"))])
 
 (new button%
 	 [parent button-panel]
@@ -152,7 +159,8 @@
 	 [min-width button-width]
 	 [callback (lambda (button event)
 				 (clear-msg)
-				 (get-libraries))])
+				 (get-libraries)
+				 (update-msg "\nAll done!\n"))])
 
 (define exit-button-panel (new vertical-panel%
 						  [parent button-panel]
