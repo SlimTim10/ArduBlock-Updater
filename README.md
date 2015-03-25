@@ -15,6 +15,6 @@ racket ardublock_updater.rkt
 ## Compile
 
 ```
-raco exe ardublock_updater.rkt
-raco distribute ardublock_updater ardublock_updater.exe
+raco exe -o ardublock_updtr ardublock_updater.rkt
+raco distribute ardublock_updtr ardublock_updtr.exe
 ```
