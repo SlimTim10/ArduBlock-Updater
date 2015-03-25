@@ -12,7 +12,7 @@ A GUI tool for updating to the latest version of Icewire Makerspace's ArduBlock 
 racket ardublock_updater.rkt
 ```
 
-## Compile
+## Compile (Windows)
 
 ```
 raco exe -o ardublock_updtr ardublock_updater.rkt
