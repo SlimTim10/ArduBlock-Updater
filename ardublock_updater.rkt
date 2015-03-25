@@ -5,6 +5,7 @@
 
 (define ardublockzip "ardublock.zip")
 (define ardublockdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "\\Documents\\Arduino\\tools\\ArduBlockTool\\tool\\"))
+(define arduinolibdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "\\Documents\\Arduino\\libraries\\"))
 
 (define (delete-ardublock)
   (for-each (lambda (arg)
@@ -60,6 +61,44 @@
 						   (lambda (exn) (update-msg (string-append "Error: " (exn-message exn))) (return))])
 						 (clean-ardublock))))
 
+(define (get-zumo-libraries)
+  (define zumolibzip "zumolib.zip")
+  (define tmpdir "zumo-shield-master/")
+  (let* ([zipfile (open-output-file zumolibzip #:mode 'binary #:exists 'replace)]
+		 [fileurl "https://codeload.github.com/pololu/zumo-shield/zip/master"]
+		 [infile (get-pure-port (string->url fileurl))])
+	(update-msg (string-append "Fetching " fileurl "... "))
+	(copy-port infile zipfile)
+	(close-output-port zipfile))
+  (update-msg "Done!\n")
+  (let ([zipfile (open-input-file zumolibzip #:mode 'binary)])
+	(unzip zipfile)
+	(close-input-port zipfile))
+  (for-each (lambda (arg)
+			  (let* ([dir (path->string arg)]
+					 [fulldir (string-append tmpdir dir)]
+					 [localdir (string-append arduinolibdir dir)])
+				(when (directory-exists? fulldir) ; Only operate on directories
+					  (when (directory-exists? localdir)
+							(update-msg (string-append "Deleting " localdir "... "))
+							(delete-directory/files localdir #:must-exist? #f)
+							(update-msg "Done!\n"))
+					  (update-msg (string-append "Copying " fulldir "... "))
+					  (copy-directory/files fulldir localdir)
+					  (update-msg "Done!\n"))))
+  			(directory-list tmpdir))
+  (update-msg "Cleaning up... ")
+  (delete-file zumolibzip)
+  (delete-directory/files tmpdir)
+  (update-msg "Done!\n"))
+
+(define (get-libraries)
+  (let/ec return
+		  (update-msg "Getting libraries...\n")
+		  (with-handlers ([exn:fail?
+						   (lambda (exn) (update-msg (string-append "Error: " (exn-message exn))) (return))])
+						 (get-zumo-libraries))))
+
 (define frame (new frame%
 				   [label "ArduBlock Updater"]))
 
@@ -88,47 +127,21 @@
 (define update-button (new button%
 	 [parent button-panel]
 	 [label "Full &Update"]
-	 [vert-margin 20]
 	 [callback (lambda (button event)
 				 (clear-msg)
-				 (update-ardublock))]))
+				 (update-ardublock)
+				 (update-msg "\n")
+				 (get-libraries))]))
 (send update-button focus)
 
 (new button%
 	 [parent button-panel]
-	 [label "&Delete"]
+	 [label "Get &Libraries"]
 	 [callback (lambda (button event)
 				 (clear-msg)
 				 (with-handlers ([exn:fail?
 								  (lambda (exn) (update-msg (string-append "Error: " (exn-message exn))))])
-								(delete-ardublock)))])
-
-(new button%
-	 [parent button-panel]
-	 [label "&Fetch"]
-	 [callback (lambda (button event)
-				 (clear-msg)
-				 (with-handlers ([exn:fail?
-								  (lambda (exn) (update-msg (string-append "Error: " (exn-message exn))))])
-								(fetch-ardublock)))])
-
-(new button%
-	 [parent button-panel]
-	 [label "&Copy"]
-	 [callback (lambda (button event)
-				 (clear-msg)
-				 (with-handlers ([exn:fail?
-								  (lambda (exn) (update-msg (string-append "Error: " (exn-message exn))))])
-								(copy-ardublock)))])
-
-(new button%
-	 [parent button-panel]
-	 [label "C&lean up"]
-	 [callback (lambda (button event)
-				 (clear-msg)
-				 (with-handlers ([exn:fail?
-								  (lambda (exn) (update-msg (string-append "Error: " (exn-message exn))))])
-								(clean-ardublock)))])
+								(get-libraries)))])
 
 (define exit-button-panel (new vertical-panel%
 						  [parent button-panel]
