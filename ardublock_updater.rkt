@@ -6,8 +6,11 @@
 (define ardublockzip "ardublock.zip")
 (define ardublockdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "/Documents/Arduino/tools/ArduBlockTool/tool/"))
 (define arduinolibdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "/Documents/Arduino/libraries/"))
+(define button-width 150)
 
 (define (delete-ardublock)
+  (when (not (directory-exists? ardublockdir))
+		(make-directory* ardublockdir))
   (for-each (lambda (arg)
 			  (let ([cur (string-append ardublockdir (path->string arg))])
 				(update-msg (string-append "Deleting " (path->string arg) "... "))
@@ -107,7 +110,7 @@
 
 (define button-panel (new vertical-panel%
 						  [parent main-panel]
-						  [alignment '(center top)]))
+						  [alignment '(left top)]))
 
 (define msg-canvas (new editor-canvas%
 						[parent main-panel]
@@ -127,6 +130,7 @@
 (define full-update-button (new button%
 	 [parent button-panel]
 	 [label "Full &Update"]
+	 [min-width button-width]
 	 [callback (lambda (button event)
 				 (clear-msg)
 				 (update-ardublock)
@@ -136,7 +140,16 @@
 
 (new button%
 	 [parent button-panel]
+	 [label "Update &ArduBlock"]
+	 [min-width button-width]
+	 [callback (lambda (button event)
+				 (clear-msg)
+				 (update-ardublock))])
+
+(new button%
+	 [parent button-panel]
 	 [label "Get &Libraries"]
+	 [min-width button-width]
 	 [callback (lambda (button event)
 				 (clear-msg)
 				 (get-libraries))])
