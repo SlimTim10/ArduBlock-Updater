@@ -124,7 +124,7 @@
 (define (clear-msg)
   (send msg erase))
 
-(define update-button (new button%
+(define full-update-button (new button%
 	 [parent button-panel]
 	 [label "Full &Update"]
 	 [callback (lambda (button event)
@@ -132,16 +132,14 @@
 				 (update-ardublock)
 				 (update-msg "\n")
 				 (get-libraries))]))
-(send update-button focus)
+(send full-update-button focus)
 
 (new button%
 	 [parent button-panel]
 	 [label "Get &Libraries"]
 	 [callback (lambda (button event)
 				 (clear-msg)
-				 (with-handlers ([exn:fail?
-								  (lambda (exn) (update-msg (string-append "Error: " (exn-message exn))))])
-								(get-libraries)))])
+				 (get-libraries))])
 
 (define exit-button-panel (new vertical-panel%
 						  [parent button-panel]
