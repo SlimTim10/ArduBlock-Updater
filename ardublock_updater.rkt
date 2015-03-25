@@ -4,8 +4,8 @@
 (require file/unzip)
 
 (define ardublockzip "ardublock.zip")
-(define ardublockdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "\\Documents\\Arduino\\tools\\ArduBlockTool\\tool\\"))
-(define arduinolibdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "\\Documents\\Arduino\\libraries\\"))
+(define ardublockdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "/Documents/Arduino/tools/ArduBlockTool/tool/"))
+(define arduinolibdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") "/Documents/Arduino/libraries/"))
 
 (define (delete-ardublock)
   (for-each (lambda (arg)
@@ -28,7 +28,7 @@
   (let ([zipfile (open-input-file ardublockzip #:mode 'binary)])
 	(unzip zipfile)
 	(close-input-port zipfile))
-  (let ([jarpath "Arduino\\tools\\ArduBlockTool\\tool\\"])
+  (let ([jarpath "Arduino/tools/ArduBlockTool/tool/"])
 	(for-each (lambda (arg)
 				(let* ([newjar (path->string arg)]
 					   [jarfile (open-input-file (string-append jarpath newjar))])
@@ -83,7 +83,7 @@
 							(update-msg (string-append "Deleting " localdir "... "))
 							(delete-directory/files localdir #:must-exist? #f)
 							(update-msg "Done!\n"))
-					  (update-msg (string-append "Copying " fulldir "... "))
+					  (update-msg (string-append "Copying " dir "... "))
 					  (copy-directory/files fulldir localdir)
 					  (update-msg "Done!\n"))))
   			(directory-list tmpdir))
