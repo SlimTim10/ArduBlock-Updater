@@ -138,34 +138,25 @@
 	   [label name]
 	   [min-width button-width]
 	   [callback (lambda (button event)
-				   exn)]))
+				   (clear-msg)
+				   exn
+				   (update-msg "\nAll done!\n"))]))
 
 (define full-update-button
   (add-button "Full &Update"
-			  (clear-msg)
+			  begin
 			  (update-ardublock)
 			  (update-msg "\n")
-			  (get-libraries)
-			  (update-msg "\nAll done!\n")))
+			  (get-libraries)))
 (send full-update-button focus)
 
-(new button%
-	 [parent button-panel]
-	 [label "Update &ArduBlock"]
-	 [min-width button-width]
-	 [callback (lambda (button event)
-				 (clear-msg)
-				 (update-ardublock)
-				 (update-msg "\nAll done!\n"))])
+(add-button "Update &ArduBlock"
+			begin
+			(update-ardublock))
 
-(new button%
-	 [parent button-panel]
-	 [label "Get &Libraries"]
-	 [min-width button-width]
-	 [callback (lambda (button event)
-				 (clear-msg)
-				 (get-libraries)
-				 (update-msg "\nAll done!\n"))])
+(add-button "Get &Libraries"
+			begin
+			(get-libraries))
 
 (define exit-button-panel (new vertical-panel%
 						  [parent button-panel]
