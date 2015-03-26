@@ -132,16 +132,21 @@
 (define (clear-msg)
   (send msg erase))
 
-(define full-update-button (new button%
-	 [parent button-panel]
-	 [label "Full &Update"]
-	 [min-width button-width]
-	 [callback (lambda (button event)
-				 (clear-msg)
-				 (update-ardublock)
-				 (update-msg "\n")
-				 (get-libraries)
-				 (update-msg "\nAll done!\n"))]))
+(define-syntax-rule (add-button name . exn)
+  (new button%
+	   [parent button-panel]
+	   [label name]
+	   [min-width button-width]
+	   [callback (lambda (button event)
+				   exn)]))
+
+(define full-update-button
+  (add-button "Full &Update"
+			  (clear-msg)
+			  (update-ardublock)
+			  (update-msg "\n")
+			  (get-libraries)
+			  (update-msg "\nAll done!\n")))
 (send full-update-button focus)
 
 (new button%
