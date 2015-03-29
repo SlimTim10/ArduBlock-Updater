@@ -10,8 +10,10 @@
 (cond
  [(equal? (system-type 'os) 'windows)
   (set! ardublockdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") ardublockdir))
-  (set! arduinolibdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") arduinolibdir))
-  ])
+  (set! arduinolibdir (string-append (getenv "HOMEDRIVE") (getenv "HOMEPATH") arduinolibdir))]
+ [(equal? (system-type 'os) 'macosx)
+  (set! ardublockdir (string-append (getenv "HOME") ardublockdir))
+  (set! arduinolibdir (string-append (getenv "HOME") arduinolibdir))])
 
 (define (delete-ardublock)
   (when (not (directory-exists? ardublockdir))
@@ -82,6 +84,7 @@
   (let ([zipfile (open-input-file zumolibzip #:mode 'binary)])
 	(unzip zipfile)
 	(close-input-port zipfile))
+  (when (not (directory-exists? arduinolibdir)) (make-directory* arduinolibdir))
   (for-each (lambda (arg)
 			  (let* ([dir (path->string arg)]
 					 [fulldir (string-append tmpdir dir)]
