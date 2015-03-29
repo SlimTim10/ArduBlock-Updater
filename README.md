@@ -15,6 +15,13 @@ racket ardublock_updater.rkt
 ## Compile (Windows)
 
 ```
+raco exe -o ardublock_updtr.exe ardublock_updater.rkt
+raco distribute ardublock_updater ardublock_updtr.exe
+```
+
+## Compile (Mac OS X)
+
+```
 raco exe -o ardublock_updtr ardublock_updater.rkt
-raco distribute ardublock_updtr ardublock_updtr.exe
+raco distribute ardublock_updater ardublock_updtr
 ```
