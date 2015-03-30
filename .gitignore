@@ -1,4 +1,5 @@
 *.bat
 *.exe
 *.app
-ardublock_updtr/
+*.zip
+ardublock_updater/
